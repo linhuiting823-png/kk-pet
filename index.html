@@ -8,240 +8,135 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
 <style>
   :root {
-    --pink:    #f4a7c0;
-    --pink2:   #fce4ef;
-    --blue:    #a8c8f0;
-    --blue2:   #dceeff;
-    --white:   #ffffff;
-    --cream:   #fdf6fb;
-    --deep:    #c2607a;
-    --deepblue:#5b8ec4;
-    --text:    #4a3555;
-    --muted:   #a889a8;
-    --shadow:  rgba(194,96,122,.15);
-    --bshadow: rgba(91,142,196,.15);
+    --pink:#f4a7c0;--pink2:#fce4ef;--blue:#a8c8f0;--blue2:#dceeff;
+    --white:#ffffff;--cream:#fdf6fb;--deep:#c2607a;--deepblue:#5b8ec4;
+    --text:#4a3555;--muted:#a889a8;--shadow:rgba(194,96,122,.15);
   }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    min-height: 100vh;
-    background: var(--cream);
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    min-height:100vh;background:var(--cream);
     background-image:
-      radial-gradient(circle at 10% 15%, #fce4ef66 0%, transparent 40%),
-      radial-gradient(circle at 90% 80%, #dceeff66 0%, transparent 40%),
-      radial-gradient(circle at 50% 50%, #fff0f866 0%, transparent 60%);
-    font-family: 'Noto Serif SC', serif;
-    color: var(--text);
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 24px 0 48px;
+      radial-gradient(circle at 10% 15%,#fce4ef66 0%,transparent 40%),
+      radial-gradient(circle at 90% 80%,#dceeff66 0%,transparent 40%);
+    font-family:'Noto Serif SC',serif;color:var(--text);
+    display:flex;align-items:flex-start;justify-content:center;padding:24px 0 48px;
   }
+  .wrap{width:100%;max-width:420px;padding:0 16px;}
+  .header{text-align:center;margin-bottom:14px;position:relative;}
+  .header h1{
+    font-family:'ZCOOL KuaiLe',cursive;font-size:1.75rem;
+    background:linear-gradient(135deg,var(--deep),var(--deepblue));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    background-clip:text;letter-spacing:.1em;
+  }
+  .header .sub{font-size:.75rem;color:var(--muted);margin-top:3px;}
 
-  .wrap { width: 100%; max-width: 420px; padding: 0 16px; }
+  /* 日记按钮 */
+  #diary-btn{
+    position:absolute;top:2px;right:0;
+    background:linear-gradient(135deg,var(--pink2),var(--blue2));
+    border:none;border-radius:14px;padding:6px 12px;
+    font-family:'ZCOOL KuaiLe',cursive;font-size:.9rem;
+    color:var(--deep);cursor:pointer;
+    box-shadow:0 2px 8px var(--shadow);
+    transition:transform .15s;
+  }
+  #diary-btn:active{transform:scale(.93);}
 
-  /* header */
-  .header { text-align: center; margin-bottom: 14px; }
-  .header h1 {
-    font-family: 'ZCOOL KuaiLe', cursive;
-    font-size: 1.75rem;
-    background: linear-gradient(135deg, var(--deep), var(--deepblue));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    letter-spacing: .1em;
+  .card{
+    background:var(--white);border-radius:30px;
+    padding:20px 18px 24px;
+    box-shadow:0 4px 24px var(--shadow),0 0 0 1.5px #fce4ef;
+    position:relative;overflow:hidden;
   }
-  .header .sub { font-size: .75rem; color: var(--muted); margin-top: 3px; }
+  .card::before{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(160deg,#fff8fc 0%,#f8f4ff 40%,#f0f8ff 100%);
+    pointer-events:none;z-index:0;
+  }
+  #mood{position:absolute;top:16px;right:18px;font-size:1.4rem;z-index:3;user-select:none;}
+  #zzz{display:none;position:absolute;top:55px;left:55%;font-size:1.5rem;z-index:4;animation:floatUp 2s ease-in-out infinite alternate;}
 
-  /* card */
-  .card {
-    background: var(--white);
-    border-radius: 30px;
-    padding: 20px 18px 24px;
-    box-shadow: 0 4px 24px var(--shadow), 0 0 0 1.5px #fce4ef;
-    position: relative;
-    overflow: hidden;
-  }
-  .card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(160deg, #fff8fc 0%, #f8f4ff 40%, #f0f8ff 100%);
-    pointer-events: none;
-    z-index: 0;
-  }
+  .kk-stage{position:relative;width:200px;margin:0 auto 6px;z-index:1;}
+  #kk-img{width:200px;display:block;transition:transform .3s;filter:drop-shadow(0 6px 16px var(--shadow));}
+  #kk-img.blink{animation:blink .15s 2;}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 
-  /* mood badge */
-  #mood {
-    position: absolute;
-    top: 16px; right: 18px;
-    font-size: 1.4rem;
-    z-index: 3;
-    transition: transform .3s;
-    user-select: none;
-    filter: drop-shadow(0 1px 3px rgba(0,0,0,.1));
+  #status-bubble{
+    position:absolute;top:-8px;right:-22px;
+    background:linear-gradient(135deg,var(--deep),#d4739a);
+    color:#fff;border-radius:16px 16px 16px 4px;
+    padding:6px 11px;font-size:.7rem;
+    font-family:'ZCOOL KuaiLe',cursive;
+    white-space:nowrap;z-index:4;
+    box-shadow:0 2px 10px var(--shadow);
+    transition:opacity .4s,transform .4s;
+    max-width:150px;text-align:center;line-height:1.5;
   }
+  #status-bubble.hidden{opacity:0;transform:translateY(-4px);pointer-events:none;}
 
-  /* kk sprite */
-  .kk-stage {
-    position: relative;
-    width: 200px;
-    margin: 0 auto 6px;
-    z-index: 1;
-  }
-  #kk-img {
-    width: 200px;
-    display: block;
-    transition: transform .3s;
-    filter: drop-shadow(0 6px 16px var(--shadow));
-  }
-  #kk-img.blink { animation: blink .15s 2; }
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin:10px 0;position:relative;z-index:1;}
+  .stat-item{border-radius:16px;padding:8px 6px 7px;text-align:center;}
+  .stat-item.s-love{background:#fff0f5;} .stat-item.s-food{background:#fff8ee;} .stat-item.s-energy{background:#f0f7ff;}
+  .stat-label{font-size:.63rem;color:var(--muted);margin-bottom:4px;}
+  .stat-bar-wrap{background:#ece8f0;border-radius:99px;height:5px;overflow:hidden;}
+  .stat-bar{height:100%;border-radius:99px;transition:width .6s cubic-bezier(.4,0,.2,1);}
+  .bar-love{background:linear-gradient(90deg,#f9a8c4,#e91e8c);}
+  .bar-food{background:linear-gradient(90deg,#ffd580,#ff9d4d);}
+  .bar-energy{background:linear-gradient(90deg,#a8d4f8,#5b8ec4);}
+  .stat-value{font-size:.68rem;color:var(--text);margin-top:3px;font-weight:600;}
 
-  /* speech bubble */
-  #status-bubble {
-    position: absolute;
-    top: -8px; right: -22px;
-    background: linear-gradient(135deg, var(--deep), #d4739a);
-    color: #fff;
-    border-radius: 16px 16px 16px 4px;
-    padding: 6px 11px;
-    font-size: .7rem;
-    font-family: 'ZCOOL KuaiLe', cursive;
-    white-space: nowrap;
-    z-index: 4;
-    box-shadow: 0 2px 10px var(--shadow);
-    transition: opacity .4s, transform .4s;
-    max-width: 140px;
-    text-align: center;
-    line-height: 1.5;
-  }
-  #status-bubble.hidden { opacity: 0; transform: translateY(-4px); pointer-events: none; }
+  #log{font-size:.82rem;color:var(--muted);text-align:center;min-height:1.6em;margin:4px 0 10px;font-family:'ZCOOL KuaiLe',cursive;letter-spacing:.04em;position:relative;z-index:1;}
 
-  /* stats */
-  .stats {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 7px;
-    margin: 10px 0;
-    position: relative;
-    z-index: 1;
-  }
-  .stat-item {
-    border-radius: 16px;
-    padding: 8px 6px 7px;
-    text-align: center;
-  }
-  .stat-item.s-love   { background: #fff0f5; }
-  .stat-item.s-food   { background: #fff8ee; }
-  .stat-item.s-energy { background: #f0f7ff; }
+  #cg-wrap{border-radius:20px;overflow:hidden;margin-bottom:14px;position:relative;z-index:1;box-shadow:0 2px 14px var(--shadow);transition:opacity .4s,max-height .4s;max-height:400px;background:#fdf0f6;}
+  #cg-wrap.hidden{opacity:0;max-height:0;margin:0;pointer-events:none;}
+  #cg{width:100%;display:block;}
 
-  .stat-label { font-size: .63rem; color: var(--muted); margin-bottom: 4px; }
-  .stat-bar-wrap { background: #ece8f0; border-radius: 99px; height: 5px; overflow: hidden; }
-  .stat-bar { height: 100%; border-radius: 99px; transition: width .6s cubic-bezier(.4,0,.2,1); }
-  .bar-love   { background: linear-gradient(90deg,#f9a8c4,#e91e8c); }
-  .bar-food   { background: linear-gradient(90deg,#ffd580,#ff9d4d); }
-  .bar-energy { background: linear-gradient(90deg,#a8d4f8,#5b8ec4); }
-  .stat-value { font-size: .68rem; color: var(--text); margin-top: 3px; font-weight: 600; }
+  .btns{display:grid;grid-template-columns:1fr 1fr;gap:9px;position:relative;z-index:1;}
+  .btn{padding:13px 8px;border:none;border-radius:20px;font-family:'ZCOOL KuaiLe',cursive;font-size:.95rem;letter-spacing:.06em;cursor:pointer;transition:transform .12s,box-shadow .12s;position:relative;overflow:hidden;}
+  .btn:active{transform:scale(.93);}
+  .btn-feed{background:linear-gradient(135deg,#fce4ef,#f9c0d8);color:var(--deep);box-shadow:0 3px 10px #f4a7c044;border:1.5px solid #f9c0d8;}
+  .btn-hug{background:linear-gradient(135deg,#dceeff,#b8d8f8);color:var(--deepblue);box-shadow:0 3px 10px #a8c8f044;border:1.5px solid #b8d8f8;}
+  .btn-kiss{background:linear-gradient(135deg,#f4a7c0,#e8789c);color:#fff;box-shadow:0 3px 12px #e8789c55;}
+  .btn-sleep{background:linear-gradient(135deg,#5b8ec4,#3a72b0);color:#fff;box-shadow:0 3px 12px #5b8ec455;}
 
-  /* log */
-  #log {
-    font-size: .82rem;
-    color: var(--muted);
-    text-align: center;
-    min-height: 1.6em;
-    margin: 4px 0 10px;
-    font-family: 'ZCOOL KuaiLe', cursive;
-    letter-spacing: .04em;
-    position: relative;
-    z-index: 1;
-  }
+  @keyframes floatUp{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(-80px) scale(1.3);opacity:0}}
+  .float-heart{position:fixed;pointer-events:none;font-size:1.3rem;animation:floatUp .9s ease-out forwards;z-index:9999;}
 
-  /* cg */
-  #cg-wrap {
-    border-radius: 20px;
-    overflow: hidden;
-    margin-bottom: 14px;
-    position: relative;
-    z-index: 1;
-    box-shadow: 0 2px 14px var(--shadow);
-    transition: opacity .4s, max-height .4s;
-    max-height: 400px;
-    background: #fdf0f6;
+  /* ── 日记弹窗 ── */
+  #diary-modal{
+    position:fixed;inset:0;z-index:1000;
+    background:rgba(80,40,70,.45);
+    display:flex;align-items:flex-end;justify-content:center;
+    padding-bottom:0;
   }
-  #cg-wrap.hidden { opacity: 0; max-height: 0; margin: 0; pointer-events: none; }
-  #cg { width: 100%; display: block; }
-
-  /* buttons */
-  .btns {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 9px;
-    position: relative;
-    z-index: 1;
+  #diary-modal.hidden{display:none;}
+  .diary-sheet{
+    background:var(--white);border-radius:28px 28px 0 0;
+    width:100%;max-width:420px;max-height:80vh;
+    overflow-y:auto;padding:20px 18px 36px;
+    box-shadow:0 -4px 32px rgba(194,96,122,.2);
   }
-  .btn {
-    padding: 13px 8px;
-    border: none;
-    border-radius: 20px;
-    font-family: 'ZCOOL KuaiLe', cursive;
-    font-size: .95rem;
-    letter-spacing: .06em;
-    cursor: pointer;
-    transition: transform .12s, box-shadow .12s;
-    position: relative;
-    overflow: hidden;
+  .diary-sheet-header{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:14px;
   }
-  .btn:active { transform: scale(.93); }
-
-  /* 粉白蓝配色 */
-  .btn-feed  {
-    background: linear-gradient(135deg, #fce4ef, #f9c0d8);
-    color: var(--deep);
-    box-shadow: 0 3px 10px #f4a7c044;
-    border: 1.5px solid #f9c0d8;
+  .diary-sheet-header h2{
+    font-family:'ZCOOL KuaiLe',cursive;font-size:1.15rem;
+    background:linear-gradient(135deg,var(--deep),var(--deepblue));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    background-clip:text;
   }
-  .btn-hug   {
-    background: linear-gradient(135deg, #dceeff, #b8d8f8);
-    color: var(--deepblue);
-    box-shadow: 0 3px 10px #a8c8f044;
-    border: 1.5px solid #b8d8f8;
+  .diary-close{background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--muted);}
+  .diary-item{
+    border-radius:18px;padding:14px 16px;margin-bottom:10px;
   }
-  .btn-kiss  {
-    background: linear-gradient(135deg, #f4a7c0, #e8789c);
-    color: #fff;
-    box-shadow: 0 3px 12px #e8789c55;
-  }
-  .btn-sleep {
-    background: linear-gradient(135deg, #5b8ec4, #3a72b0);
-    color: #fff;
-    box-shadow: 0 3px 12px #5b8ec455;
-  }
-  .btn:disabled { opacity: .4; cursor: default; }
-
-  /* zzz */
-  #zzz {
-    display: none;
-    position: absolute;
-    top: 55px; left: 55%;
-    font-size: 1.5rem;
-    z-index: 4;
-    animation: floatUp 2s ease-in-out infinite alternate;
-  }
-
-  /* float hearts */
-  @keyframes floatUp {
-    0%   { transform: translateY(0) scale(1);   opacity: 1; }
-    100% { transform: translateY(-80px) scale(1.3); opacity: 0; }
-  }
-  .float-heart {
-    position: fixed;
-    pointer-events: none;
-    font-size: 1.3rem;
-    animation: floatUp .9s ease-out forwards;
-    z-index: 9999;
-  }
+  .diary-item.unlocked{background:linear-gradient(135deg,#fff5f8,#f0f8ff);}
+  .diary-item.locked{background:#f8f4f8;opacity:.75;}
+  .diary-title{font-family:'ZCOOL KuaiLe',cursive;font-size:.95rem;color:var(--deep);margin-bottom:8px;}
+  .diary-body{font-size:.8rem;color:var(--text);line-height:1.9;white-space:pre-wrap;}
+  .diary-hint{font-size:.78rem;color:var(--muted);line-height:1.7;}
+  .diary-hint small{color:#c8aac8;font-size:.72rem;}
 </style>
 </head>
 <body>
@@ -249,17 +144,15 @@
   <div class="header">
     <h1>养一只 KK ♡</h1>
     <div class="sub">泠泠的专属小精灵</div>
+    <button id="diary-btn" onclick="openDiary()">📖</button>
   </div>
-
   <div class="card" id="card">
     <div id="mood">😊</div>
     <div id="zzz">💤</div>
-
     <div class="kk-stage">
       <div id="status-bubble" class="hidden">kk在等你呢～</div>
       <img id="kk-img" src="kk_default.png" alt="KK">
     </div>
-
     <div class="stats">
       <div class="stat-item s-love">
         <div class="stat-label">❤️ 爱意</div>
@@ -277,13 +170,8 @@
         <div class="stat-value" id="v-energy">—</div>
       </div>
     </div>
-
     <div id="log">KK出现了 ₍ᐢᴗ˔ᴗᐢ₎</div>
-
-    <div id="cg-wrap" class="hidden">
-      <img id="cg" src="" alt="">
-    </div>
-
+    <div id="cg-wrap" class="hidden"><img id="cg" src="" alt=""></div>
     <div class="btns">
       <button class="btn btn-feed">🍡 喂食</button>
       <button class="btn btn-hug">🤗 抱抱</button>
@@ -292,6 +180,18 @@
     </div>
   </div>
 </div>
+
+<!-- 日记弹窗 -->
+<div id="diary-modal" class="hidden">
+  <div class="diary-sheet">
+    <div class="diary-sheet-header">
+      <h2>📖 kk的日记</h2>
+      <button class="diary-close" onclick="closeDiary()">✕</button>
+    </div>
+    <div id="diary-list"></div>
+  </div>
+</div>
+
 <script src="script.js"></script>
 </body>
 </html>
