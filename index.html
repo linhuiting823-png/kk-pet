@@ -1,0 +1,24 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KK Pet v2</title><link rel="manifest" href="manifest.json">
+<style>
+body{margin:0;background:#fff0f6;font-family:sans-serif}
+.wrap{max-width:430px;margin:auto;padding:16px}
+.card{background:#fff;border-radius:24px;padding:16px;box-shadow:0 4px 16px rgba(0,0,0,.08)}
+#kk{width:240px;display:block;margin:auto}
+button{padding:10px;border:none;border-radius:14px;margin:4px}
+#cg{width:100%;border-radius:16px}
+</style></head><body>
+<div class="wrap"><div class="card">
+<h2>养一只 KK ♡</h2>
+<img id="kk" src="kk_default.png">
+<p>❤️ <span id="love">60</span> 🍰 <span id="food">50</span> ⚡ <span id="energy">70</span></p>
+<div>
+<button onclick="act('feed')">喂食</button>
+<button onclick="act('hug')">抱抱</button>
+<button onclick="act('kiss')">亲亲</button>
+<button onclick="act('sleep')">哄睡</button>
+</div>
+<img id="cg" src="cg_hug.jpg">
+<p id="log">KK出现了 ₍ᐢᴗ˔ᴗᐢ₎</p>
+</div></div>
+<script src="script.js"></script></body></html>
