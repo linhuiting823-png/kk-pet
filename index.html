@@ -8,301 +8,155 @@
 <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;600&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
 <style>
 :root{
-  --cream:#f7f3ed;
-  --card:#fffdf9;
+  --cream:#fdf7f5;
+  --card:#fffcfa;
   --brown:#7a5c4a;
   --brown2:#a07860;
-  --pink:#f0a8be;
-  --pink2:#fce8f0;
+  --pink:#f2b8cc;
+  --pink2:#fdeef4;
   --pink3:#e8789c;
-  --blue:#8fc0e8;
-  --blue2:#dceeff;
+  --pink4:#f9d0e0;
+  --blue:#a8c8f0;
+  --blue2:#e8f4ff;
   --deepblue:#5b8ec4;
+  --green:#b8d8c0;
+  --green2:#e8f5ec;
   --text:#5a3c2e;
   --muted:#b09080;
-  --border:#e8d8c8;
-  --shadow:rgba(122,92,74,.12);
+  --border:#ecd8d0;
+  --shadow:rgba(122,92,74,.10);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-
 body{
   min-height:100vh;
   background:var(--cream);
-  background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c8a898' fill-opacity='0.06'%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-image:radial-gradient(circle at 80% 10%,rgba(242,184,204,.12) 0%,transparent 40%),
+    radial-gradient(circle at 10% 90%,rgba(168,200,240,.1) 0%,transparent 40%);
   font-family:'Noto Serif SC',serif;
   color:var(--text);
   display:flex;flex-direction:column;align-items:center;
   padding:0 0 80px;
 }
 
-/* ── 封面页 ── */
+/* ── 封面 ── */
 #page-cover{
-  width:100%;max-width:440px;
-  min-height:100vh;
+  width:100%;max-width:440px;min-height:100vh;
   display:flex;flex-direction:column;align-items:center;
-  padding:40px 20px 40px;
-  text-align:center;
+  padding:48px 24px 40px;text-align:center;
 }
-.cover-img{
-  width:100%;max-width:360px;
-  border-radius:24px;
-  box-shadow:0 8px 32px var(--shadow);
-  margin-bottom:24px;
-  border:3px solid white;
-}
-.cover-title{
-  font-family:'Ma Shan Zheng',cursive;
-  font-size:2rem;color:var(--brown);
-  margin-bottom:6px;letter-spacing:.15em;
-}
-.cover-sub{font-size:.82rem;color:var(--muted);margin-bottom:28px;letter-spacing:.08em;}
-.cover-enter{
-  background:linear-gradient(135deg,var(--pink),var(--pink3));
-  color:white;border:none;border-radius:99px;
-  padding:13px 40px;font-family:'ZCOOL KuaiLe',cursive;
-  font-size:1rem;letter-spacing:.1em;cursor:pointer;
-  box-shadow:0 4px 16px rgba(232,120,156,.35);
-  transition:transform .15s,box-shadow .15s;
-}
+.cover-img{width:100%;max-width:340px;border-radius:28px;box-shadow:0 8px 32px var(--shadow);margin-bottom:28px;border:3px solid white;}
+.cover-title{font-family:'Ma Shan Zheng',cursive;font-size:2.1rem;color:var(--brown);margin-bottom:6px;letter-spacing:.15em;}
+.cover-sub{font-size:.8rem;color:var(--muted);margin-bottom:10px;letter-spacing:.08em;}
+.cover-wait{font-size:.75rem;color:var(--pink3);margin-bottom:28px;font-family:'ZCOOL KuaiLe',cursive;min-height:1.2em;}
+.cover-enter{background:linear-gradient(135deg,var(--pink),var(--pink3));color:white;border:none;border-radius:99px;padding:13px 44px;font-family:'ZCOOL KuaiLe',cursive;font-size:1rem;letter-spacing:.1em;cursor:pointer;box-shadow:0 4px 16px rgba(232,120,156,.3);transition:transform .15s;}
 .cover-enter:active{transform:scale(.96);}
 
-/* ── 主容器 ── */
+/* ── app容器 ── */
 #app{width:100%;max-width:440px;display:none;flex-direction:column;}
 
 /* ── 顶栏 ── */
-.topbar{
-  padding:16px 20px 12px;
-  display:flex;align-items:center;justify-content:space-between;
-  position:sticky;top:0;z-index:50;
-  background:rgba(247,243,237,.92);
-  backdrop-filter:blur(8px);
-  border-bottom:1px solid var(--border);
-}
-.topbar-title{font-family:'Ma Shan Zheng',cursive;font-size:1.2rem;color:var(--brown);}
-.topbar-time{font-size:.7rem;color:var(--muted);}
-#diary-btn{
-  background:var(--pink2);border:1.5px dashed var(--pink);
-  border-radius:10px;padding:4px 10px;
-  font-family:'ZCOOL KuaiLe',cursive;font-size:.75rem;
-  color:var(--pink3);cursor:pointer;
-}
+.topbar{padding:14px 18px 11px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;background:rgba(253,247,245,.93);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);}
+.topbar-left{display:flex;flex-direction:column;}
+.topbar-title{font-family:'Ma Shan Zheng',cursive;font-size:1.15rem;color:var(--brown);}
+.topbar-streak{font-size:.6rem;color:var(--pink3);font-family:'ZCOOL KuaiLe',cursive;margin-top:1px;}
+.topbar-time{font-size:.68rem;color:var(--muted);}
+#diary-btn{background:var(--pink2);border:1.5px dashed var(--pink);border-radius:10px;padding:4px 10px;font-family:'ZCOOL KuaiLe',cursive;font-size:.75rem;color:var(--pink3);cursor:pointer;}
+
+/* ── 时间横幅 ── */
+#time-banner{margin:0 16px 10px;background:linear-gradient(135deg,var(--pink3),#c2607a);color:white;border-radius:16px;padding:10px 16px;font-family:'ZCOOL KuaiLe',cursive;font-size:.8rem;text-align:center;display:none;box-shadow:0 2px 10px rgba(232,120,156,.25);line-height:1.6;}
 
 /* ── 页面 ── */
-.page{display:none;padding:16px 16px 0;}
+.page{display:none;padding:14px 16px 0;}
 .page.active{display:block;}
 
-/* ── 卡片基础 ── */
-.card{
-  background:var(--card);
-  border-radius:20px;
-  border:1.5px solid var(--border);
-  padding:16px;
-  margin-bottom:12px;
-  box-shadow:0 2px 12px var(--shadow);
-  position:relative;
-}
-.card-title{
-  font-family:'ZCOOL KuaiLe',cursive;
-  font-size:.78rem;color:var(--muted);
-  margin-bottom:10px;
-  display:flex;align-items:center;gap:6px;
-}
-.card-title::after{content:'';flex:1;height:1px;background:var(--border);}
-
-/* ── 时间问候横幅 ── */
-#time-banner{
-  margin:0 16px 10px;
-  background:linear-gradient(135deg,var(--brown),var(--brown2));
-  color:white;border-radius:14px;padding:9px 14px;
-  font-family:'ZCOOL KuaiLe',cursive;font-size:.78rem;
-  text-align:center;display:none;
-  box-shadow:0 2px 8px var(--shadow);
-}
+/* ── 卡片 ── */
+.card{background:var(--card);border-radius:22px;border:1.5px solid var(--border);padding:16px;margin-bottom:12px;box-shadow:0 2px 12px var(--shadow);}
+.sec-title{font-family:'ZCOOL KuaiLe',cursive;font-size:.75rem;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.sec-title::after{content:'';flex:1;height:1px;background:var(--border);}
 
 /* ── 主页 ── */
-.kk-hero{
-  text-align:center;padding:8px 0 4px;
-  position:relative;
-}
-.kk-hero img{
-  width:150px;
-  filter:drop-shadow(0 6px 14px rgba(240,168,190,.4));
-  transition:transform .3s;
-}
-#mood{
-  position:absolute;top:8px;right:12px;
-  font-size:1.3rem;
-}
-#status-bubble{
-  display:inline-block;
-  background:linear-gradient(135deg,var(--brown),var(--brown2));
-  color:white;border-radius:14px 14px 14px 4px;
-  padding:5px 11px;font-size:.7rem;
-  font-family:'ZCOOL KuaiLe',cursive;
-  margin-top:4px;margin-bottom:6px;
-  line-height:1.5;max-width:220px;
-  box-shadow:0 2px 8px var(--shadow);
-  transition:opacity .4s;
-}
+.kk-hero{text-align:center;padding:6px 0 4px;position:relative;}
+.kk-hero img{width:148px;filter:drop-shadow(0 5px 14px rgba(242,184,204,.45));transition:transform .3s;}
+#mood{position:absolute;top:6px;right:10px;font-size:1.2rem;}
+#status-bubble{display:inline-block;background:linear-gradient(135deg,var(--brown),var(--brown2));color:white;border-radius:14px 14px 14px 4px;padding:5px 12px;font-size:.7rem;font-family:'ZCOOL KuaiLe',cursive;margin-top:3px;margin-bottom:4px;line-height:1.6;max-width:230px;box-shadow:0 2px 8px var(--shadow);transition:opacity .4s;}
 #status-bubble.hidden{opacity:0;pointer-events:none;}
-#zzz{display:none;position:absolute;top:20px;right:40px;font-size:1.3rem;animation:floatUp 2s ease-in-out infinite alternate;}
+#zzz{display:none;position:absolute;top:16px;right:36px;font-size:1.2rem;animation:floatUp 2s ease-in-out infinite alternate;}
 
-/* 数值 */
-.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:4px;}
-.stat-item{
-  border-radius:14px;padding:10px 8px 8px;text-align:center;
-  border:1.5px dashed var(--border);
-  background:var(--card);
-}
-.stat-label{font-size:.6rem;color:var(--muted);margin-bottom:5px;}
-.stat-bar-wrap{background:#ede8e2;border-radius:99px;height:5px;overflow:hidden;}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:2px;}
+.stat-item{border-radius:14px;padding:9px 7px 7px;text-align:center;border:1.5px dashed var(--border);background:var(--card);}
+.stat-label{font-size:.58rem;color:var(--muted);margin-bottom:4px;}
+.stat-bar-wrap{background:#ede4e0;border-radius:99px;height:5px;overflow:hidden;}
 .stat-bar{height:100%;border-radius:99px;transition:width .6s;}
 .bar-love{background:linear-gradient(90deg,#f9c0d4,#e8789c);}
 .bar-food{background:linear-gradient(90deg,#ffd090,#ff9d4d);}
 .bar-energy{background:linear-gradient(90deg,#a8d4f8,#5b8ec4);}
-.stat-value{font-size:.65rem;color:var(--text);margin-top:4px;font-weight:600;font-family:'ZCOOL KuaiLe',cursive;}
+.stat-value{font-size:.63rem;color:var(--text);margin-top:3px;font-weight:600;font-family:'ZCOOL KuaiLe',cursive;}
 
-/* log */
-#log{
-  font-size:.78rem;color:var(--muted);text-align:center;
-  min-height:1.5em;margin:6px 0 10px;
-  font-family:'ZCOOL KuaiLe',cursive;letter-spacing:.04em;
-}
-
-/* CG */
+#log{font-size:.76rem;color:var(--muted);text-align:center;min-height:1.5em;margin:6px 0 9px;font-family:'ZCOOL KuaiLe',cursive;letter-spacing:.04em;}
 #cg-wrap{border-radius:16px;overflow:hidden;margin-bottom:10px;box-shadow:0 2px 12px var(--shadow);transition:opacity .4s,max-height .4s;max-height:300px;}
 #cg-wrap.hidden{opacity:0;max-height:0;margin:0;pointer-events:none;}
 #cg{width:100%;display:block;}
 
-/* 互动按钮 */
 .btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.btn{
-  padding:12px 8px;border:none;border-radius:16px;
-  font-family:'ZCOOL KuaiLe',cursive;font-size:.88rem;
-  cursor:pointer;transition:transform .12s;
-  letter-spacing:.04em;
-}
+.btn{padding:12px 8px;border:none;border-radius:16px;font-family:'ZCOOL KuaiLe',cursive;font-size:.86rem;cursor:pointer;transition:transform .12s;letter-spacing:.04em;}
 .btn:active{transform:scale(.94);}
 .btn-feed{background:var(--pink2);color:var(--pink3);border:1.5px dashed var(--pink);}
 .btn-hug{background:var(--blue2);color:var(--deepblue);border:1.5px dashed var(--blue);}
 .btn-kiss{background:linear-gradient(135deg,var(--pink),var(--pink3));color:white;}
 .btn-sleep{background:linear-gradient(135deg,var(--deepblue),#3a72b0);color:white;}
 
-/* ── 游戏页 ── */
-.game-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
-.game-card{
-  background:var(--card);border-radius:18px;
-  border:1.5px dashed var(--border);
-  padding:16px 10px;text-align:center;cursor:pointer;
-  transition:transform .12s,box-shadow .12s;
-  box-shadow:0 2px 8px var(--shadow);
-}
+/* ── 游戏大厅 ── */
+.game-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.game-card{background:var(--card);border-radius:18px;border:1.5px dashed var(--border);padding:16px 10px;text-align:center;cursor:pointer;transition:transform .12s;box-shadow:0 2px 8px var(--shadow);}
 .game-card:active{transform:scale(.96);}
-.game-icon{font-size:2.2rem;margin-bottom:6px;}
-.game-name{font-family:'ZCOOL KuaiLe',cursive;font-size:.82rem;color:var(--text);}
-.game-desc{font-size:.58rem;color:var(--muted);margin-top:3px;}
+.game-icon{font-size:2.1rem;margin-bottom:6px;}
+.game-name{font-family:'ZCOOL KuaiLe',cursive;font-size:.8rem;color:var(--text);}
+.game-desc{font-size:.57rem;color:var(--muted);margin-top:3px;}
 .game-score{font-size:.62rem;color:var(--pink3);margin-top:5px;font-family:'ZCOOL KuaiLe',cursive;}
 
-/* ── 游戏进行页 ── */
+/* ── 游戏画布页 ── */
 #page-play{padding:0;}
-.game-header{
-  display:flex;align-items:center;gap:10px;
-  padding:10px 16px;border-bottom:1px solid var(--border);
-  background:var(--card);
-}
+.game-header{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border);background:var(--card);}
 .back-btn{background:none;border:none;font-size:1.1rem;cursor:pointer;color:var(--brown);}
-.game-play-title{font-family:'ZCOOL KuaiLe',cursive;font-size:.92rem;color:var(--text);flex:1;}
+.game-play-title{font-family:'ZCOOL KuaiLe',cursive;font-size:.9rem;color:var(--text);flex:1;}
 .game-hud{font-size:.7rem;color:var(--pink3);font-family:'ZCOOL KuaiLe',cursive;}
 #game-canvas{display:block;width:100%;cursor:pointer;}
-.game-tap-hint{text-align:center;font-size:.65rem;color:var(--muted);padding:6px;font-family:'ZCOOL KuaiLe',cursive;}
+.game-tap-hint{text-align:center;font-size:.64rem;color:var(--muted);padding:6px;font-family:'ZCOOL KuaiLe',cursive;}
 
 /* ── 对话页 ── */
-.chat-kk{display:flex;gap:10px;margin-bottom:14px;align-items:flex-end;}
-.chat-av{width:36px;height:36px;border-radius:50%;overflow:hidden;flex-shrink:0;border:2px solid var(--pink2);}
+.chat-kk{display:flex;gap:10px;margin-bottom:12px;align-items:flex-end;}
+.chat-av{width:34px;height:34px;border-radius:50%;overflow:hidden;flex-shrink:0;border:2px solid var(--pink4);}
 .chat-av img{width:100%;height:100%;object-fit:cover;}
-.chat-text{
-  background:var(--pink2);border-radius:16px 16px 16px 4px;
-  border:1px solid var(--pink);
-  padding:10px 14px;font-size:.78rem;color:var(--text);
-  line-height:1.8;max-width:230px;
-  font-family:'ZCOOL KuaiLe',cursive;
-}
-.chat-options{display:flex;flex-direction:column;gap:7px;margin:0 0 10px 46px;}
-.chat-opt{
-  background:white;border:1.5px dashed var(--pink);
-  border-radius:12px;padding:8px 14px;
-  font-family:'ZCOOL KuaiLe',cursive;font-size:.74rem;
-  color:var(--pink3);cursor:pointer;text-align:left;transition:all .12s;
-}
+.chat-text{background:var(--pink2);border-radius:16px 16px 16px 4px;border:1px solid var(--pink);padding:9px 13px;font-size:.76rem;color:var(--text);line-height:1.85;max-width:235px;font-family:'ZCOOL KuaiLe',cursive;}
+.chat-options{display:flex;flex-direction:column;gap:7px;margin:0 0 10px 44px;}
+.chat-opt{background:white;border:1.5px dashed var(--pink);border-radius:12px;padding:8px 13px;font-family:'ZCOOL KuaiLe',cursive;font-size:.72rem;color:var(--pink3);cursor:pointer;text-align:left;transition:all .12s;}
 .chat-opt:active,.chat-opt.chosen{background:var(--pink2);}
 .chat-me{display:flex;justify-content:flex-end;margin-bottom:6px;}
-.chat-text-me{
-  background:linear-gradient(135deg,var(--deepblue),#3a72b0);
-  border-radius:16px 16px 4px 16px;
-  padding:10px 14px;font-size:.78rem;color:white;
-  line-height:1.8;max-width:200px;
-  font-family:'ZCOOL KuaiLe',cursive;
-}
-.chat-kk-reply{
-  background:var(--pink2);border:1px solid var(--pink);
-  border-radius:16px 16px 16px 4px;
-  padding:10px 14px;font-size:.78rem;color:var(--text);
-  line-height:1.8;max-width:230px;
-  font-family:'ZCOOL KuaiLe',cursive;
-  margin:0 0 12px 46px;
-}
-#chat-next{
-  width:100%;padding:11px;border:none;border-radius:14px;
-  background:linear-gradient(135deg,var(--pink),var(--pink3));
-  color:white;font-family:'ZCOOL KuaiLe',cursive;
-  font-size:.85rem;cursor:pointer;margin-top:6px;
-}
+.chat-text-me{background:linear-gradient(135deg,var(--deepblue),#3a72b0);border-radius:16px 16px 4px 16px;padding:9px 13px;font-size:.76rem;color:white;line-height:1.85;max-width:205px;font-family:'ZCOOL KuaiLe',cursive;}
+.chat-kk-reply{background:var(--pink2);border:1px solid var(--pink);border-radius:16px 16px 16px 4px;padding:9px 13px;font-size:.76rem;color:var(--text);line-height:1.85;max-width:235px;font-family:'ZCOOL KuaiLe',cursive;margin:0 0 12px 44px;}
+#chat-next{width:100%;padding:11px;border:none;border-radius:14px;background:linear-gradient(135deg,var(--pink),var(--pink3));color:white;font-family:'ZCOOL KuaiLe',cursive;font-size:.84rem;cursor:pointer;margin-top:6px;}
 
 /* ── 日记弹窗 ── */
-#diary-modal{
-  position:fixed;inset:0;z-index:200;
-  background:rgba(90,60,46,.4);
-  display:flex;align-items:flex-end;
-}
+#diary-modal{position:fixed;inset:0;z-index:200;background:rgba(90,60,46,.38);display:flex;align-items:flex-end;}
 #diary-modal.hidden{display:none;}
-.diary-sheet{
-  background:var(--cream);border-radius:24px 24px 0 0;
-  width:100%;max-width:440px;margin:0 auto;
-  max-height:78vh;overflow-y:auto;padding:18px 16px 36px;
-  box-shadow:0 -4px 32px var(--shadow);
-}
-.diary-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.diary-sheet{background:var(--cream);border-radius:24px 24px 0 0;width:100%;max-width:440px;margin:0 auto;max-height:78vh;overflow-y:auto;padding:18px 16px 36px;box-shadow:0 -4px 32px var(--shadow);}
+.diary-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
 .diary-header h2{font-family:'Ma Shan Zheng',cursive;font-size:1rem;color:var(--brown);}
 .diary-close{background:none;border:none;font-size:1.1rem;cursor:pointer;color:var(--muted);}
-.diary-item{border-radius:16px;padding:12px 14px;margin-bottom:10px;border:1.5px dashed var(--border);}
+.diary-item{border-radius:16px;padding:12px 14px;margin-bottom:9px;border:1.5px dashed var(--border);}
 .diary-item.unlocked{background:white;}
-.diary-item.locked{background:#f5f0ea;opacity:.75;}
-.diary-ttl{font-family:'ZCOOL KuaiLe',cursive;font-size:.82rem;color:var(--brown);margin-bottom:6px;}
-.diary-body{font-size:.72rem;color:var(--text);line-height:2;}
-.diary-hint{font-size:.7rem;color:var(--muted);line-height:1.8;}
-.diary-hint small{color:#c8aaaa;font-size:.65rem;}
+.diary-item.locked{background:#f8f2ee;opacity:.72;}
+.diary-ttl{font-family:'ZCOOL KuaiLe',cursive;font-size:.8rem;color:var(--brown);margin-bottom:6px;}
+.diary-body{font-size:.7rem;color:var(--text);line-height:2.05;}
+.diary-hint{font-size:.68rem;color:var(--muted);line-height:1.8;}
+.diary-hint small{color:#c8aaaa;font-size:.63rem;}
 
 /* ── 底部导航 ── */
-.tabbar{
-  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
-  width:100%;max-width:440px;
-  background:rgba(247,243,237,.95);
-  border-top:1px solid var(--border);
-  backdrop-filter:blur(10px);
-  display:flex;justify-content:space-around;padding:8px 0 16px;
-  z-index:100;
-}
-.tab{
-  display:flex;flex-direction:column;align-items:center;gap:3px;
-  background:none;border:none;cursor:pointer;
-  font-family:'ZCOOL KuaiLe',cursive;font-size:.58rem;
-  color:var(--muted);padding:4px 16px;border-radius:12px;
-  transition:all .15s;
-}
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:440px;background:rgba(253,247,245,.95);border-top:1px solid var(--border);backdrop-filter:blur(10px);display:flex;justify-content:space-around;padding:8px 0 16px;z-index:100;}
+.tab{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;font-family:'ZCOOL KuaiLe',cursive;font-size:.58rem;color:var(--muted);padding:4px 16px;border-radius:12px;transition:all .15s;}
 .tab.active,.tab:active{color:var(--pink3);background:var(--pink2);}
-.tab span{font-size:1.15rem;}
+.tab span{font-size:1.12rem;}
 
-/* ── 动画 ── */
 @keyframes floatUp{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(-70px) scale(1.3);opacity:0}}
 .float-heart{position:fixed;pointer-events:none;font-size:1.2rem;animation:floatUp .9s ease-out forwards;z-index:9999;}
 #kk-img.blink{animation:blink .15s 2;}
@@ -311,51 +165,38 @@ body{
 </head>
 <body>
 
-<!-- 封面页 -->
 <div id="page-cover">
   <img class="cover-img" src="cover.png" alt="kk&泠泠">
   <div class="cover-title">KK · 日记</div>
   <div class="cover-sub">泠泠的专属小精灵 ♡</div>
+  <div class="cover-wait" id="cover-wait"></div>
   <button class="cover-enter" onclick="enterApp()">进入 →</button>
 </div>
 
-<!-- 主应用 -->
 <div id="app">
-  <!-- 顶栏 -->
   <div class="topbar">
-    <div class="topbar-title">KK · 日记</div>
+    <div class="topbar-left">
+      <div class="topbar-title">KK · 日记</div>
+      <div class="topbar-streak" id="streak-bar"></div>
+    </div>
     <span class="topbar-time" id="clock">00:00</span>
     <button id="diary-btn" onclick="openDiary()">📖</button>
   </div>
 
-  <!-- 时间横幅 -->
   <div id="time-banner"></div>
 
-  <!-- ── 主页 ── -->
   <div class="page active" id="page-main" style="padding:12px 16px 0;">
     <div class="card" style="padding:14px 14px 16px;">
       <div class="kk-hero">
         <div id="mood">😊</div>
         <div id="zzz">💤</div>
-        <img id="kk-img" src="kk_default.png" alt="KK" style="width:150px;">
+        <img id="kk-img" src="kk_default.png" alt="KK">
         <div><div id="status-bubble" class="hidden">kk在等你呢～</div></div>
       </div>
       <div class="stats">
-        <div class="stat-item">
-          <div class="stat-label">❤️ 爱意</div>
-          <div class="stat-bar-wrap"><div class="stat-bar bar-love" id="bar-love"></div></div>
-          <div class="stat-value" id="v-love">—</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-label">🍡 饱腹</div>
-          <div class="stat-bar-wrap"><div class="stat-bar bar-food" id="bar-food"></div></div>
-          <div class="stat-value" id="v-food">—</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-label">⚡ 精力</div>
-          <div class="stat-bar-wrap"><div class="stat-bar bar-energy" id="bar-energy"></div></div>
-          <div class="stat-value" id="v-energy">—</div>
-        </div>
+        <div class="stat-item"><div class="stat-label">❤️ 爱意</div><div class="stat-bar-wrap"><div class="stat-bar bar-love" id="bar-love"></div></div><div class="stat-value" id="v-love">—</div></div>
+        <div class="stat-item"><div class="stat-label">🍡 饱腹</div><div class="stat-bar-wrap"><div class="stat-bar bar-food" id="bar-food"></div></div><div class="stat-value" id="v-food">—</div></div>
+        <div class="stat-item"><div class="stat-label">⚡ 精力</div><div class="stat-bar-wrap"><div class="stat-bar bar-energy" id="bar-energy"></div></div><div class="stat-value" id="v-energy">—</div></div>
       </div>
     </div>
     <div id="log">KK出现了 ₍ᐢᴗ˔ᴗᐢ₎</div>
@@ -368,50 +209,32 @@ body{
     </div>
   </div>
 
-  <!-- ── 游戏大厅 ── -->
   <div class="page" id="page-games" style="padding:12px 16px 0;">
-    <div class="card-title" style="font-family:'ZCOOL KuaiLe',cursive;font-size:.82rem;color:var(--muted);padding:0 4px 8px;">🕹️ 游戏室 · 得分可增加爱意</div>
+    <div class="sec-title">🕹️ 游戏室 · 得分可增加爱意</div>
     <div class="game-grid">
-      <div class="game-card" onclick="startGame('hearts')">
-        <div class="game-icon">💝</div>
-        <div class="game-name">接爱心</div>
-        <div class="game-desc">接住kk的爱心</div>
-        <div class="game-score" id="score-hearts">最高: 0</div>
-      </div>
-      <div class="game-card" onclick="startGame('jump')">
-        <div class="game-icon">🏃</div>
-        <div class="game-name">kk跳跳</div>
-        <div class="game-desc">帮kk跳过障碍</div>
-        <div class="game-score" id="score-jump">最高: 0</div>
-      </div>
-      <div class="game-card" onclick="startGame('shooter')">
-        <div class="game-icon">✈️</div>
-        <div class="game-name">kk打怪</div>
-        <div class="game-desc">击碎坏情绪！</div>
-        <div class="game-score" id="score-shooter">最高: 0</div>
-      </div>
+      <div class="game-card" onclick="startGame('hearts')"><div class="game-icon">💝</div><div class="game-name">接爱心</div><div class="game-desc">接住kk的爱心</div><div class="game-score" id="score-hearts">最高: 0</div></div>
+      <div class="game-card" onclick="startGame('jump')"><div class="game-icon">🏃</div><div class="game-name">kk跳跳</div><div class="game-desc">帮kk跳过障碍</div><div class="game-score" id="score-jump">最高: 0</div></div>
+      <div class="game-card" onclick="startGame('shooter')"><div class="game-icon">✈️</div><div class="game-name">kk打怪</div><div class="game-desc">击碎坏情绪！</div><div class="game-score" id="score-shooter">最高: 0</div></div>
+      <div class="game-card" onclick="startGame('roguelite')"><div class="game-icon">⚔️</div><div class="game-name">kk战记</div><div class="game-desc">数字肉鸽战斗！</div><div class="game-score" id="score-roguelite">最高: 0</div></div>
     </div>
   </div>
 
-  <!-- ── 游戏画布 ── -->
   <div class="page" id="page-play" style="padding:0;">
     <div class="game-header">
       <button class="back-btn" onclick="goPage('games')">←</button>
       <span class="game-play-title" id="game-title">接爱心</span>
       <span class="game-hud" id="game-hud">分数: 0</span>
     </div>
-    <canvas id="game-canvas" width="440" height="400"></canvas>
+    <canvas id="game-canvas" width="440" height="420"></canvas>
     <div class="game-tap-hint" id="tap-hint">点击屏幕开始</div>
   </div>
 
-  <!-- ── 对话页 ── -->
   <div class="page" id="page-chat" style="padding:12px 16px 0;">
-    <div class="card-title" style="font-family:'ZCOOL KuaiLe',cursive;font-size:.82rem;color:var(--muted);padding:0 4px 10px;">💬 和kk说话</div>
+    <div class="sec-title">💬 和kk说话</div>
     <div id="chat-area"></div>
     <button id="chat-next" onclick="nextQuestion()">换个话题 →</button>
   </div>
 
-  <!-- 底部导航 -->
   <div class="tabbar">
     <button class="tab active" id="tab-main" onclick="goPage('main')"><span>🏠</span>主页</button>
     <button class="tab" id="tab-games" onclick="goPage('games')"><span>🕹️</span>游戏</button>
@@ -419,13 +242,9 @@ body{
   </div>
 </div>
 
-<!-- 日记弹窗 -->
 <div id="diary-modal" class="hidden">
   <div class="diary-sheet">
-    <div class="diary-header">
-      <h2>📖 kk的日记</h2>
-      <button class="diary-close" onclick="closeDiary()">✕</button>
-    </div>
+    <div class="diary-header"><h2>📖 kk的日记</h2><button class="diary-close" onclick="closeDiary()">✕</button></div>
     <div id="diary-list"></div>
   </div>
 </div>
