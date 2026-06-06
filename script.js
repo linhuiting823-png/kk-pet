@@ -218,7 +218,7 @@ function px(t,x,y,sz,col){ctx.fillStyle=col;ctx.font=`bold ${sz}px 'ZCOOL KuaiLe
 
 function startGame(type){
   goPage('play');
-  $('game-title').textContent={hearts:'💝 接爱心',jump:'🏃 kk跳跳',shooter:'✈️ kk打怪',roguelite:'⚔️ kk战记'}[type];
+  $('game-title').textContent={hearts:'💝 接爱心',jump:'🏃 kk跳跳',shooter:'✈️ kk打怪',roguelite:'⚔️ kk格子'}[type];
   $('game-hud').textContent='分数: 0';$('tap-hint').textContent='点击屏幕开始';
   gameRunning=false;if(gameRAF){cancelAnimationFrame(gameRAF);gameRAF=null;}
   drawReady(type);
@@ -231,7 +231,7 @@ function drawReady(type){
   ctx.fillStyle=bg;ctx.fillRect(0,0,CW,CH);
   ctx.setLineDash([6,4]);ctx.strokeStyle='rgba(242,184,204,.5)';ctx.lineWidth=2;
   ctx.strokeRect(24,CH/2-75,CW-48,150);ctx.setLineDash([]);
-  px({hearts:'💝  接住kk的爱心！',jump:'🏃  帮kk跳过障碍！',shooter:'✈️  击碎坏情绪！',roguelite:'⚔️  击败敌人！'}[type],CW/2-95,CH/2-22,17,'#c2607a');
+  px({hearts:'💝  接住kk的爱心！',jump:'🏃  帮kk跳过障碍！',shooter:'✈️  击碎坏情绪！',roguelite:'⚔️  走格子打怪兽！'}[type],CW/2-95,CH/2-22,17,'#c2607a');
   px('点击开始 ♡',CW/2-52,CH/2+28,17,'#5b8ec4');
 }
 
@@ -321,139 +321,171 @@ function runShooter(){
 
 // ── kk战记（数字肉鸽）──
 function runRoguelite(){
-  // 状态
-  let floor=1,score=0;
-  let kk={hp:30,maxHp:30,atk:5,def:1};
-  let enemy=null,log='',phase='fight'; // fight | reward
-  let animFrame=0,hitFlash=0,kkShake=0;
+  // ── 数字格子肉鸽 ──
+  // kk初始数字1，走格子，踩到≤自身数字的怪→打赢→数字相加
+  // 踩到>自身的怪→打不过，只能走其他方向
+  // 走到终点格子过关，数字越大越好
 
-  const ENEMIES=[
-    {name:'小忧郁',emoji:'😟',hp:8, atk:3,reward:2},
-    {name:'焦虑团',emoji:'😰',hp:12,atk:4,reward:3},
-    {name:'坏情绪',emoji:'😡',hp:16,atk:5,reward:4},
-    {name:'大烦恼',emoji:'😤',hp:22,atk:6,reward:6},
-    {name:'失眠怪',emoji:'🌧️',hp:28,atk:7,reward:8},
-    {name:'BOSS压力',emoji:'💀',hp:40,atk:9,reward:15},
-  ];
-  const SKILLS=[
-    {name:'💕 爱的抱抱',desc:'攻击+3',apply:k=>{k.atk+=3;}},
-    {name:'🛡️ 泠泠加油',desc:'防御+2',apply:k=>{k.def+=2;}},
-    {name:'❤️ 回血',      desc:'恢复10HP',apply:k=>{k.hp=Math.min(k.maxHp,k.hp+10);}},
-    {name:'⚡ 暴击',     desc:'攻击×1.5',apply:k=>{k.atk=Math.floor(k.atk*1.5);}},
-    {name:'🌟 全强化',   desc:'攻击防御+2',apply:k=>{k.atk+=2;k.def+=2;}},
-  ];
+  const COLS=5, ROWS=6;
+  const CELL=56, PAD_X=(CW-COLS*CELL)/2, PAD_Y=80;
+  const EMOJIS=['😟','😰','😡','😤','🌧️','💀','😈','👻'];
 
-  function spawnEnemy(){
-    const idx=Math.min(Math.floor((floor-1)/2),ENEMIES.length-1);
-    const base=ENEMIES[idx];
-    const scale=1+floor*.15;
-    enemy={...base,hp:Math.floor(base.hp*scale),maxHp:Math.floor(base.hp*scale),atk:Math.floor(base.atk*(1+floor*.1))};
-  }
-  spawnEnemy();
+  let kkVal=1, score=0, steps=0, floor=1;
+  let kkPos={r:ROWS-1,c:Math.floor(COLS/2)};
+  let grid=[], log='', animCells={};
 
-  function getRewardChoices(){
-    const shuffled=[...SKILLS].sort(()=>Math.random()-.5);
-    return shuffled.slice(0,3);
-  }
-  let rewards=[];
-
-  function playerAttack(){
-    if(phase!=='fight')return;
-    const dmg=Math.max(1,kk.atk-Math.floor(enemy.atk*.1)+Math.floor(Math.random()*3));
-    enemy.hp-=dmg;log=`kk攻击！造成 ${dmg} 伤害`;hitFlash=8;
-    if(enemy.hp<=0){
-      score+=enemy.reward;
-      if(floor%3===0&&floor>0){log='🎉 过关！选择强化';phase='reward';rewards=getRewardChoices();}
-      else{log=`击败${enemy.name}！+${enemy.reward}分`;floor++;spawnEnemy();}
-    } else {
-      // 敌人反击
-      setTimeout(()=>{
-        const edm=Math.max(1,enemy.atk-kk.def+Math.floor(Math.random()*2));
-        kk.hp-=edm;log=`${enemy.name}反击！受到 ${edm} 伤害`;kkShake=6;
-        if(kk.hp<=0){kk.hp=0;endGame('roguelite',score);}
-      },400);
+  function buildGrid(){
+    grid=[];
+    for(let r=0;r<ROWS;r++){
+      grid[r]=[];
+      for(let c=0;c<COLS;c++){
+        if(r===ROWS-1&&c===Math.floor(COLS/2)){grid[r][c]={type:'kk'}; continue;}
+        if(r===0&&c===Math.floor(COLS/2)){grid[r][c]={type:'goal',val:'🏁'}; continue;}
+        // 怪物数值：靠近终点越大
+        const base=Math.max(1,Math.floor((ROWS-1-r)*kkVal*.8+Math.random()*kkVal*1.5));
+        const val=Math.max(1,base);
+        grid[r][c]={type:'enemy',val,emoji:EMOJIS[Math.min(Math.floor(val/3),EMOJIS.length-1)]};
+      }
     }
   }
+  buildGrid();
 
-  function chooseReward(i){
-    rewards[i].apply(kk);log=`获得「${rewards[i].name}」！`;
-    phase='fight';floor++;spawnEnemy();
+  function cellXY(r,c){return{x:PAD_X+c*CELL+CELL/2, y:PAD_Y+r*CELL+CELL/2};}
+
+  function tryMove(dr,dc){
+    const nr=kkPos.r+dr, nc=kkPos.c+dc;
+    if(nr<0||nr>=ROWS||nc<0||nc>=COLS)return;
+    const cell=grid[nr][nc];
+    if(cell.type==='kk')return;
+    if(cell.type==='goal'){
+      score+=kkVal*2+steps;
+      floor++;kkVal=Math.floor(kkVal*1.5);steps=0;
+      log=`🎉 过关！kk变成 ${kkVal}！`;
+      buildGrid();kkPos={r:ROWS-1,c:Math.floor(COLS/2)};grid[kkPos.r][kkPos.c]={type:'kk'};
+      return;
+    }
+    if(cell.type==='enemy'){
+      if(cell.val<=kkVal){
+        // 打赢
+        const newVal=kkVal+cell.val;
+        log=`✨ ${kkVal}+${cell.val}=${newVal}！`;
+        animCells[`${nr},${nc}`]=8;
+        grid[kkPos.r][kkPos.c]={type:'empty'};
+        kkVal=newVal; steps++;score+=cell.val;
+        kkPos={r:nr,c:nc}; grid[nr][nc]={type:'kk'};
+      } else {
+        // 打不过
+        log=`🚫 ${cell.val} 太强了！绕开吧。`;
+        animCells[`${nr},${nc}`]=-8; // 红闪
+      }
+    } else if(cell.type==='empty'){
+      grid[kkPos.r][kkPos.c]={type:'empty'};
+      kkPos={r:nr,c:nc}; grid[nr][nc]={type:'kk'}; steps++;
+    }
+    $('game-hud').textContent=`第${floor}关 · ${kkVal}`;
   }
 
-  // 绘制
-  function drawHP(x,y,w,cur,max,color){
-    ctx.fillStyle='#e8d8d0';ctx.fillRect(x,y,w,8);ctx.beginPath();ctx.roundRect(x,y,w,8,4);ctx.fill();
-    ctx.fillStyle=color;ctx.beginPath();ctx.roundRect(x,y,Math.max(0,w*(cur/max)),8,4);ctx.fill();
-  }
+  // 触摸/点击方向
+  let touchStart=null;
+  canvas.ontouchstart=e=>{touchStart={x:e.touches[0].clientX,y:e.touches[0].clientY};};
+  canvas.ontouchend=e=>{
+    if(!touchStart)return;
+    const dx=e.changedTouches[0].clientX-touchStart.x;
+    const dy=e.changedTouches[0].clientY-touchStart.y;
+    touchStart=null;
+    if(Math.abs(dx)<10&&Math.abs(dy)<10) return;
+    if(Math.abs(dx)>Math.abs(dy)) tryMove(0,dx>0?1:-1);
+    else tryMove(dy>0?1:-1,0);
+  };
+  canvas.onclick=e=>{
+    // 点击格子直接走
+    const r2=canvas.getBoundingClientRect();
+    const cx=(e.clientX-r2.left)*(CW/r2.width);
+    const cy=(e.clientY-r2.top)*(CH/r2.height);
+    for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){
+      const {x,y}=cellXY(r,c);
+      if(Math.abs(cx-x)<CELL/2&&Math.abs(cy-y)<CELL/2){
+        const dr=r-kkPos.r, dc=c-kkPos.c;
+        if(Math.abs(dr)+Math.abs(dc)===1) tryMove(dr,dc);
+        return;
+      }
+    }
+  };
 
   function loop(){
     if(!gameRunning)return;
-    animFrame++;
     ctx.clearRect(0,0,CW,CH);
 
     // 背景
     const bg=ctx.createLinearGradient(0,0,0,CH);bg.addColorStop(0,'#fff5f8');bg.addColorStop(1,'#f0f5ff');
     ctx.fillStyle=bg;ctx.fillRect(0,0,CW,CH);
-    // 地板格子
-    ctx.strokeStyle='rgba(242,184,204,.15)';ctx.lineWidth=1;
-    for(let x=0;x<CW;x+=32){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,CH);ctx.stroke();}
-    for(let y=0;y<CH;y+=32){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(CW,y);ctx.stroke();}
 
-    // HUD顶部
-    ctx.fillStyle='rgba(255,255,255,.9)';ctx.fillRect(0,0,CW,54);
-    ctx.strokeStyle='rgba(242,184,204,.4)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,54);ctx.lineTo(CW,54);ctx.stroke();
-    px(`第 ${floor} 层`,12,20,13,'#c2607a');
-    px(`分数: ${score}`,12,40,12,'#a889a8');
-    // kk HP条
-    px('kk',CW/2-40,20,12,'#5b8ec4');
-    drawHP(CW/2-40,26,80,kk.hp,kk.maxHp,'#f9a8c4');
-    px(`${kk.hp}/${kk.maxHp}`,CW/2-40,50,11,'#c2607a');
-    px(`⚔${kk.atk} 🛡${kk.def}`,CW/2+20,40,11,'#7a5c4a');
-    $('game-hud').textContent=`第${floor}层 · ${score}分`;
+    // HUD
+    ctx.fillStyle='rgba(255,255,255,.92)';ctx.fillRect(0,0,CW,60);
+    ctx.strokeStyle='rgba(242,184,204,.4)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,60);ctx.lineTo(CW,60);ctx.stroke();
+    px(`第 ${floor} 关`,12,22,13,'#c2607a');
+    px(`kk = ${kkVal}`,12,44,13,'#5b8ec4');
+    px(`得分: ${score}`,CW-95,22,13,'#c2607a');
+    px(`步数: ${steps}`,CW-95,44,12,'#a889a8');
 
-    if(phase==='fight'&&enemy){
-      // 敌人
-      const ex=CW*.62,ey=CH*.3;
-      const eshake=hitFlash>0?(Math.random()*6-3):0;
-      ctx.font='64px serif';ctx.fillText(enemy.emoji,ex+eshake-32,ey);
-      if(hitFlash>0){ctx.fillStyle='rgba(255,100,100,.25)';ctx.fillRect(0,0,CW,CH);hitFlash--;}
-      px(enemy.name,ex-24,ey+38,13,'#7a5c4a');
-      drawHP(ex-40,ey+44,80,Math.max(0,enemy.hp),enemy.maxHp,'#f06080');
-      px(`${Math.max(0,enemy.hp)}/${enemy.maxHp}`,ex-40,ey+68,11,'#a889a8');
+    // 格子
+    for(let r=0;r<ROWS;r++){
+      for(let c=0;c<COLS;c++){
+        const {x,y}=cellXY(r,c);
+        const cell=grid[r][c];
+        const key=`${r},${c}`;
+        const anim=animCells[key]||0;
 
-      // kk角色
-      const kx=CW*.22,ky2=CH*.55;
-      const kshake=kkShake>0?(Math.random()*5-2.5):0;
-      ctx.font='52px serif';ctx.fillText('🧍',kx+kshake-22,ky2);
-      if(kkShake>0)kkShake--;
+        // 格子背景
+        let fillColor='rgba(255,255,255,.85)';
+        if(cell.type==='kk') fillColor='rgba(249,168,196,.35)';
+        else if(cell.type==='goal') fillColor='rgba(168,220,168,.4)';
+        else if(cell.type==='enemy'&&cell.val>kkVal) fillColor='rgba(255,200,200,.3)';
+        else if(cell.type==='enemy'&&cell.val<=kkVal) fillColor='rgba(200,230,255,.4)';
+        else if(cell.type==='empty') fillColor='rgba(245,240,238,.5)';
 
-      // 攻击按钮
-      ctx.fillStyle='rgba(255,255,255,.95)';ctx.beginPath();ctx.roundRect(CW/2-70,CH*.76,140,40,14);ctx.fill();
-      ctx.strokeStyle='rgba(242,184,204,.8)';ctx.setLineDash([4,3]);ctx.lineWidth=1.5;ctx.beginPath();ctx.roundRect(CW/2-70,CH*.76,140,40,14);ctx.stroke();ctx.setLineDash([]);
-      px('⚔️ 点击攻击',CW/2-46,CH*.76+26,15,'#c2607a');
+        if(anim<0){fillColor='rgba(255,100,100,.3)';}
+        if(anim>0){fillColor='rgba(168,220,168,.5)';}
 
-      // log
-      if(log){ctx.fillStyle='rgba(255,255,255,.88)';ctx.beginPath();ctx.roundRect(14,CH*.88,CW-28,36,10);ctx.fill();px(log,24,CH*.88+24,13,'#7a5c4a');}
+        ctx.fillStyle=fillColor;
+        ctx.beginPath();ctx.roundRect(x-CELL/2+3,y-CELL/2+3,CELL-6,CELL-6,8);ctx.fill();
+        // 边框
+        ctx.strokeStyle=cell.type==='kk'?'rgba(232,120,156,.6)':cell.type==='goal'?'rgba(100,180,100,.5)':'rgba(220,200,210,.4)';
+        ctx.lineWidth=1.5;ctx.setLineDash(cell.val<=kkVal&&cell.type==='enemy'?[3,2]:[]);
+        ctx.beginPath();ctx.roundRect(x-CELL/2+3,y-CELL/2+3,CELL-6,CELL-6,8);ctx.stroke();ctx.setLineDash([]);
 
-      canvas.onclick=()=>{if(phase==='fight')playerAttack();};
+        // 内容
+        if(cell.type==='kk'){
+          ctx.font='22px serif';ctx.fillText('🧍',x-11,y+8);
+          px(String(kkVal),x-6,y+22,11,'#c2607a');
+        } else if(cell.type==='goal'){
+          ctx.font='22px serif';ctx.fillText('🏁',x-11,y+8);
+        } else if(cell.type==='enemy'){
+          ctx.font='18px serif';ctx.fillText(cell.emoji,x-9,y+2);
+          const numColor=cell.val<=kkVal?'#3a8ec4':'#e05070';
+          px(String(cell.val),x-(cell.val>=10?8:5),y+20,13,numColor);
+        } else if(cell.type==='empty'){
+          ctx.fillStyle='rgba(200,180,180,.2)';ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill();
+        }
 
-    } else if(phase==='reward'){
-      // 奖励选择界面
-      px('选择强化！',CW/2-50,CH*.2,18,'#c2607a');
-      rewards.forEach((r,i)=>{
-        const rx=CW/2-110,ry=CH*.28+i*80,rw=220,rh=64;
-        ctx.fillStyle='rgba(255,255,255,.95)';ctx.beginPath();ctx.roundRect(rx,ry,rw,rh,14);ctx.fill();
-        ctx.strokeStyle='rgba(242,184,204,.7)';ctx.setLineDash([4,3]);ctx.lineWidth=1.5;ctx.beginPath();ctx.roundRect(rx,ry,rw,rh,14);ctx.stroke();ctx.setLineDash([]);
-        px(r.name,rx+14,ry+28,14,'#c2607a');px(r.desc,rx+14,ry+48,12,'#a889a8');
-      });
-      canvas.onclick=e=>{
-        const r2=canvas.getBoundingClientRect(),cy2=(e.clientY-r2.top)*(CH/r2.height);
-        rewards.forEach((_,i)=>{const ry=CH*.28+i*80;if(cy2>ry&&cy2<ry+64)chooseReward(i);});
-      };
+        if(anim!==0) animCells[key]=(anim>0?anim-1:anim+1);
+        if(animCells[key]===0) delete animCells[key];
+      }
     }
+
+    // log
+    if(log){
+      ctx.fillStyle='rgba(255,255,255,.92)';ctx.beginPath();ctx.roundRect(10,CH-50,CW-20,36,10);ctx.fill();
+      px(log,20,CH-25,13,'#7a5c4a');
+    }
+
+    // 操作提示
+    ctx.fillStyle='rgba(180,160,155,.6)';
+    px('滑动或点击相邻格子移动',CW/2-80,CH-8,11,'#b09080');
 
     gameRAF=requestAnimationFrame(loop);
   }
+  $('game-hud').textContent=`第${floor}关 · kk=${kkVal}`;
   gameRAF=requestAnimationFrame(loop);
 }
 
