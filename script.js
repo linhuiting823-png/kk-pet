@@ -321,6 +321,7 @@ function runShooter(){
 
 // ── kk战记（数字肉鸽）──
 function runRoguelite(){
+  function fmtN(n){if(n>=1e9)return (n/1e9).toFixed(1).replace(/\.0$/,'')+'B';if(n>=1e6)return (n/1e6).toFixed(1).replace(/\.0$/,'')+'M';if(n>=1000)return (n/1000).toFixed(1).replace(/\.0$/,'')+'k';return String(n);}
   // ── 数字格子肉鸽 ──
   // kk初始数字1，走格子，踩到≤自身数字的怪→打赢→数字相加
   // 踩到>自身的怪→打不过，只能走其他方向
@@ -342,7 +343,7 @@ function runRoguelite(){
         if(r===ROWS-1&&c===Math.floor(COLS/2)){grid[r][c]={type:'kk'}; continue;}
         if(r===0&&c===Math.floor(COLS/2)){grid[r][c]={type:'goal',val:'🏁'}; continue;}
         // 怪物数值：靠近终点越大
-        const base=Math.max(1,Math.floor((ROWS-1-r)*kkVal*.8+Math.random()*kkVal*1.5));
+        const base=Math.max(1,Math.floor((ROWS-1-r)*kkVal*.3+Math.random()*kkVal*.6));
         const val=Math.max(1,base);
         grid[r][c]={type:'enemy',val,emoji:EMOJIS[Math.min(Math.floor(val/3),EMOJIS.length-1)]};
       }
@@ -359,7 +360,7 @@ function runRoguelite(){
     if(cell.type==='kk')return;
     if(cell.type==='goal'){
       score+=kkVal*2+steps;
-      floor++;kkVal=Math.floor(kkVal*1.5);steps=0;
+      floor++;kkVal=Math.floor(kkVal*1.2+2);steps=0;
       log=`🎉 过关！kk变成 ${kkVal}！`;
       buildGrid();kkPos={r:ROWS-1,c:Math.floor(COLS/2)};grid[kkPos.r][kkPos.c]={type:'kk'};
       return;
@@ -368,14 +369,14 @@ function runRoguelite(){
       if(cell.val<=kkVal){
         // 打赢
         const newVal=kkVal+cell.val;
-        log=`✨ ${kkVal}+${cell.val}=${newVal}！`;
+        log=`✨ ${fmtN(kkVal)}+${fmtN(cell.val)}=${fmtN(newVal)}！`;
         animCells[`${nr},${nc}`]=8;
         grid[kkPos.r][kkPos.c]={type:'empty'};
         kkVal=newVal; steps++;score+=cell.val;
         kkPos={r:nr,c:nc}; grid[nr][nc]={type:'kk'};
       } else {
         // 打不过
-        log=`🚫 ${cell.val} 太强了！绕开吧。`;
+        log=`🚫 ${fmtN(cell.val)} 太强了！绕开吧。`;
         animCells[`${nr},${nc}`]=-8; // 红闪
       }
     } else if(cell.type==='empty'){
@@ -424,7 +425,7 @@ function runRoguelite(){
     ctx.fillStyle='rgba(255,255,255,.92)';ctx.fillRect(0,0,CW,60);
     ctx.strokeStyle='rgba(242,184,204,.4)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,60);ctx.lineTo(CW,60);ctx.stroke();
     px(`第 ${floor} 关`,12,22,13,'#c2607a');
-    px(`kk = ${kkVal}`,12,44,13,'#5b8ec4');
+    px(`kk = ${fmtN(kkVal)}`,12,44,13,'#5b8ec4');
     px(`得分: ${score}`,CW-95,22,13,'#c2607a');
     px(`步数: ${steps}`,CW-95,44,12,'#a889a8');
 
@@ -463,7 +464,8 @@ function runRoguelite(){
         } else if(cell.type==='enemy'){
           ctx.font='18px serif';ctx.fillText(cell.emoji,x-9,y+2);
           const numColor=cell.val<=kkVal?'#3a8ec4':'#e05070';
-          px(String(cell.val),x-(cell.val>=10?8:5),y+20,13,numColor);
+          const dv=fmtN(cell.val);
+          px(dv,x-(dv.length>3?10:dv.length>2?7:5),y+20,dv.length>4?10:13,numColor);
         } else if(cell.type==='empty'){
           ctx.fillStyle='rgba(200,180,180,.2)';ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill();
         }
@@ -485,7 +487,7 @@ function runRoguelite(){
 
     gameRAF=requestAnimationFrame(loop);
   }
-  $('game-hud').textContent=`第${floor}关 · kk=${kkVal}`;
+  $('game-hud').textContent=`第${floor}关 · kk=${fmtN(kkVal)}`;
   gameRAF=requestAnimationFrame(loop);
 }
 
